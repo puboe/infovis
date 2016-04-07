@@ -1,0 +1,77 @@
+<%= form_for(@persona) do |f| %>
+  <% if @persona.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@persona.errors.count, "error") %> prohibited this persona from being saved:</h2>
+
+      <ul>
+      <% @persona.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :id %><br>
+    <%= f.text_field :id %>
+  </div>
+  <div class="field">
+    <%= f.label :HOGAR_REF_ID %><br>
+    <%= f.text_field :HOGAR_REF_ID %>
+  </div>
+  <div class="field">
+    <%= f.label :P01 %><br>
+    <%= f.text_field :P01 %>
+  </div>
+  <div class="field">
+    <%= f.label :P02 %><br>
+    <%= f.text_field :P02 %>
+  </div>
+  <div class="field">
+    <%= f.label :P03 %><br>
+    <%= f.text_field :P03 %>
+  </div>
+  <div class="field">
+    <%= f.label :P05 %><br>
+    <%= f.text_field :P05 %>
+  </div>
+  <div class="field">
+    <%= f.label :P06 %><br>
+    <%= f.text_field :P06 %>
+  </div>
+  <div class="field">
+    <%= f.label :P07 %><br>
+    <%= f.text_field :P07 %>
+  </div>
+  <div class="field">
+    <%= f.label :P12 %><br>
+    <%= f.text_field :P12 %>
+  </div>
+  <div class="field">
+    <%= f.label :EDADAGRU %><br>
+    <%= f.text_field :EDADAGRU %>
+  </div>
+  <div class="field">
+    <%= f.label :EDADQUI %><br>
+    <%= f.text_field :EDADQUI %>
+  </div>
+  <div class="field">
+    <%= f.label :P08 %><br>
+    <%= f.text_field :P08 %>
+  </div>
+  <div class="field">
+    <%= f.label :P09 %><br>
+    <%= f.text_field :P09 %>
+  </div>
+  <div class="field">
+    <%= f.label :P10 %><br>
+    <%= f.text_field :P10 %>
+  </div>
+  <div class="field">
+    <%= f.label :CONDACT %><br>
+    <%= f.text_field :CONDACT %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

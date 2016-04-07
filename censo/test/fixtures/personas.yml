@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  PERSONA_REF_ID: 
+  HOGAR_REF_ID: 
+  P01: 
+  P02: 
+  P03: 
+  P05: 
+  P06: 
+  P07: 
+  P12: 
+  ADADAGRU: 
+  EDADQUI: 
+  P08: 
+  P09: 
+  P10: 
+  CONDACT: 
+
+two:
+  PERSONA_REF_ID: 
+  HOGAR_REF_ID: 
+  P01: 
+  P02: 
+  P03: 
+  P05: 
+  P06: 
+  P07: 
+  P12: 
+  ADADAGRU: 
+  EDADQUI: 
+  P08: 
+  P09: 
+  P10: 
+  CONDACT: 

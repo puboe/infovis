@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Personas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Persona ref id</th>
+      <th>Hogar ref id</th>
+      <th>P01</th>
+      <th>P02</th>
+      <th>P03</th>
+      <th>P05</th>
+      <th>P06</th>
+      <th>P07</th>
+      <th>P12</th>
+      <th>Edadagru</th>
+      <th>Edadqui</th>
+      <th>P08</th>
+      <th>P09</th>
+      <th>P10</th>
+      <th>Condact</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @personas.each do |persona| %>
+      <tr>
+        <td><%= persona.id %></td>
+        <td><%= persona.HOGAR_REF_ID %></td>
+        <td><%= persona.P01 %></td>
+        <td><%= persona.P02 %></td>
+        <td><%= persona.P03 %></td>
+        <td><%= persona.P05 %></td>
+        <td><%= persona.P06 %></td>
+        <td><%= persona.P07 %></td>
+        <td><%= persona.P12 %></td>
+        <td><%= persona.EDADAGRU %></td>
+        <td><%= persona.EDADQUI %></td>
+        <td><%= persona.P08 %></td>
+        <td><%= persona.P09 %></td>
+        <td><%= persona.P10 %></td>
+        <td><%= persona.CONDACT %></td>
+        <td><%= link_to 'Show', persona %></td>
+        <td><%= link_to 'Edit', edit_persona_path(persona) %></td>
+        <td><%= link_to 'Destroy', persona, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Persona', new_persona_path %>
