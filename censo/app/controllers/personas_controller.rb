@@ -1,10 +1,11 @@
 class PersonasController < ApplicationController
   before_action :set_persona, only: [:show, :edit, :update, :destroy]
+  before_action :set_default_response_format, only: [:sex]
 
   # GET /personas
   # GET /personas.json
   def index
-    @personas = Persona.all
+    @personas = Persona.all.limit(1000)
   end
 
   # GET /personas/1
@@ -19,6 +20,14 @@ class PersonasController < ApplicationController
 
   # GET /personas/1/edit
   def edit
+  end
+
+  def sex
+    count = Persona.group(:P02).count
+    respond_to do |format|
+      msg = { :males => count[1], :females => count[2] }
+      format.json  { render :json => msg }
+    end
   end
 
   # POST /personas
@@ -70,5 +79,9 @@ class PersonasController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def persona_params
       params.require(:persona).permit(:PERSONA_REF_ID, :HOGAR_REF_ID, :P01, :P02, :P03, :P05, :P06, :P07, :P12, :ADADAGRU, :EDADQUI, :P08, :P09, :P10, :CONDACT)
+    end
+
+    def set_default_response_format
+      request.format = :json
     end
 end

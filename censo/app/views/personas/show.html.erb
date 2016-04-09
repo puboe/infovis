@@ -16,12 +16,18 @@
 </p>
 
 <p>
-  <strong>P02:</strong>
-  <%= @persona.P02 %>
+  <strong>Sexo:</strong>
+  <% if @persona.P02 == 1 %>
+    M
+  <% elsif @persona.P02 == 2 %>
+    F
+  <% else %>
+    <%= @persona.P02 %>
+  <% end %>
 </p>
 
 <p>
-  <strong>P03:</strong>
+  <strong>Edad:</strong>
   <%= @persona.P03 %>
 </p>
 

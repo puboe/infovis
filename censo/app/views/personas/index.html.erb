@@ -8,8 +8,8 @@
       <th>Persona ref id</th>
       <th>Hogar ref id</th>
       <th>P01</th>
-      <th>P02</th>
-      <th>P03</th>
+      <th>Sexo</th>
+      <th>Edad</th>
       <th>P05</th>
       <th>P06</th>
       <th>P07</th>
@@ -30,7 +30,15 @@
         <td><%= persona.id %></td>
         <td><%= persona.HOGAR_REF_ID %></td>
         <td><%= persona.P01 %></td>
-        <td><%= persona.P02 %></td>
+        <td>
+          <% if persona.P02 == 1 %>
+            M
+          <% elsif persona.P02 == 2 %>
+            F
+          <% else %>
+            <%= persona.P02 %>
+          <% end %>
+        </td>
         <td><%= persona.P03 %></td>
         <td><%= persona.P05 %></td>
         <td><%= persona.P06 %></td>
