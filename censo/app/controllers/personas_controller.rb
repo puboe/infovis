@@ -23,9 +23,13 @@ class PersonasController < ApplicationController
   end
 
   def sex
-    count = Persona.group(:P02).count
+    if not (@males and @females)
+      count = Persona.group(:P02).count
+      @males = count[1]
+      @females = count[2]
+    end
     respond_to do |format|
-      msg = { :males => count[1], :females => count[2] }
+      msg = { :males => @males, :females => @females }
       format.json  { render :json => msg }
     end
   end
@@ -34,7 +38,7 @@ class PersonasController < ApplicationController
   # POST /personas.json
   def create
     @persona = Persona.new(persona_params)
-
+    delete_cache()
     respond_to do |format|
       if @persona.save
         format.html { redirect_to @persona, notice: 'Persona was successfully created.' }
@@ -49,6 +53,7 @@ class PersonasController < ApplicationController
   # PATCH/PUT /personas/1
   # PATCH/PUT /personas/1.json
   def update
+    delete_cache()
     respond_to do |format|
       if @persona.update(persona_params)
         format.html { redirect_to @persona, notice: 'Persona was successfully updated.' }
@@ -64,6 +69,7 @@ class PersonasController < ApplicationController
   # DELETE /personas/1.json
   def destroy
     @persona.destroy
+    delete_cache()
     respond_to do |format|
       format.html { redirect_to personas_url, notice: 'Persona was successfully destroyed.' }
       format.json { head :no_content }
@@ -83,5 +89,10 @@ class PersonasController < ApplicationController
 
     def set_default_response_format
       request.format = :json
+    end
+
+    def delete_cache
+      @males = nil
+      @females = nil
     end
 end
