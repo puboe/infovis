@@ -50,6 +50,6 @@ test:
 #
 production:
   <<: *default
-  database: censo_production
+  database: censo
   username: censo
   password: <%= ENV['CENSO_DATABASE_PASSWORD'] %>
