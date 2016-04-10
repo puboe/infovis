@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-  get 'personas/sexcount' => 'personas#sex', defaults: {format: :json}
+  get 'personas/sexcount' => 'personas#sex_count', defaults: {format: :json}
 
   resources :personas
 
