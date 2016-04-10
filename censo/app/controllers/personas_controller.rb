@@ -3,6 +3,10 @@ class PersonasController < ApplicationController
   before_action :set_default_response_format, only: [:sex_count]
   before_action :delete_cache, only: [:destroy, :create, :update]
 
+  #Definitely not the best idea.
+  @@males = nil
+  @@females = nil
+
   # GET /personas
   # GET /personas.json
   def index
@@ -24,13 +28,13 @@ class PersonasController < ApplicationController
   end
 
   def sex_count
-    if not (@males and @females)
+    if not (@@males and @@females)
       count = Persona.group(:P02).count
-      @males = count[1]
-      @females = count[2]
+      @@males = count[1]
+      @@females = count[2]
     end
     respond_to do |format|
-      msg = { :males => @males, :females => @females }
+      msg = { :males => @@males, :females => @@females }
       format.json  { render :json => msg }
     end
   end
@@ -90,7 +94,7 @@ class PersonasController < ApplicationController
     end
 
     def delete_cache
-      @males = nil
-      @females = nil
+      @@males = nil
+      @@females = nil
     end
 end
