@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Pie chart: Censo 2010</title>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+		<style type="text/css">
+
+			text {
+				font-family: sans-serif;
+				font-size: 18px;
+				fill: white;
+			}
+
+		</style>
+	</head>
+	<body>
+		<script >
+
+			var pieChart = function(dataset) {
+
+				// Width and height
+				var w = 500;
+				var h = 500;
+
+		  // 	var dataset = [{
+		  //       label: "Males",
+		  //       value: 19523766
+		  //     }, {
+		  //       label: "Females",
+		  //       value: 20593330
+		  //    }];
+
+				var outerRadius = Math.min(w, h) / 2;
+				var innerRadius = 0;
+
+				var arc = d3.svg.arc()
+								.innerRadius(innerRadius)
+								.outerRadius(outerRadius);
+				
+				var pie = d3.layout.pie().value(function(d) { return d.value; });;
+				
+				// Easy colors accessible via a 10-step ordinal scale
+				var color = d3.scale.category20();
+
+				// Create SVG element
+				var svg = d3.select("#chart")
+							.append("svg")
+							.attr("width", w)
+							.attr("height", h);
+				
+				// Set up groups
+				var arcs = svg.selectAll("g.arc")
+							  .data(pie(dataset))
+							  .enter()
+							  .append("g")
+							  .attr("class", "arc")
+							  .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+				
+				// Draw arc paths
+				arcs.append("path")
+				    .attr("fill", function(d, i) {
+				    	return color(i);
+				    })
+				    .attr("d", arc);
+				
+				// Labels
+				arcs.append("text")
+				    .attr("transform", function(d) {
+				    	return "translate(" + arc.centroid(d) + ")";
+				    })
+				    .attr("text-anchor", "middle")
+				    .text(function(d, i) {
+				    	console.log("d: " + d);
+				    	console.log("i: " + i);
+				    	return dataset[i].label;
+				    });
+			}
+
+			var getJSON = function(url, callback) {
+			    var xhr = new XMLHttpRequest();
+			    xhr.open("get", url, true);
+			    xhr.responseType = "json";
+			    xhr.onload = function() {
+			      var status = xhr.status;
+			      if (status == 200) {
+			        callback(null, xhr.response);
+			      } else {
+			        callback(status);
+			      }
+			    };
+			    xhr.send();
+			};
+
+			getJSON("http://bananastic.ddns.net:3001/personas/sexcount",
+				function(err, data) {
+  					if (err != null) {
+    					alert("Something went wrong: " + err);
+  					} else {
+    					pieChart(data);
+  					}
+			});
+							
+		</script>
+
+		<h3>
+			Porcentaje de hombres y mujeres en Argentina según el censo del año 2010
+		</h3>
+		<div id="chart"/>
+
+	</body>
+</html>
