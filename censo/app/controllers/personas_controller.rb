@@ -34,7 +34,7 @@ class PersonasController < ApplicationController
       @@females = count[2]
     end
     respond_to do |format|
-      msg = [{:label => "Males", :value => @@males, {:label => "Females", :value => @@females}]
+      msg = [{:label => "Males", :value => @@males}, {:label => "Females", :value => @@females}]
       format.json  { render :json => msg }
     end
   end
