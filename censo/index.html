@@ -44,8 +44,7 @@
 				
 				var pie = d3.layout.pie().value(function(d) { return d.value; });;
 				
-				// Easy colors accessible via a 10-step ordinal scale
-				var color = d3.scale.category20();
+				var color = [ "#3182bd", "#F06292" ];
 
 				// Create SVG element
 				var svg = d3.select("#chart")
@@ -64,7 +63,7 @@
 				// Draw arc paths
 				arcs.append("path")
 				    .attr("fill", function(d, i) {
-				    	return color(i);
+				    	return color[i];
 				    })
 				    .attr("d", arc);
 				
@@ -81,22 +80,7 @@
 				    });
 			}
 
-			var getJSON = function(url, callback) {
-			    var xhr = new XMLHttpRequest();
-			    xhr.open("get", url, true);
-			    xhr.responseType = "json";
-			    xhr.onload = function() {
-			      var status = xhr.status;
-			      if (status == 200) {
-			        callback(null, xhr.response);
-			      } else {
-			        callback(status);
-			      }
-			    };
-			    xhr.send();
-			};
-
-			getJSON("http://bananastic.ddns.net:3001/personas/sexcount",
+			d3.json("http://bananastic.ddns.net:3001/personas/sexcount", 
 				function(err, data) {
   					if (err != null) {
     					alert("Something went wrong: " + err);
