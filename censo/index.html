@@ -27,14 +27,6 @@
 				var w = 500;
 				var h = 500;
 
-		  // 	var dataset = [{
-		  //       label: "Males",
-		  //       value: 19523766
-		  //     }, {
-		  //       label: "Females",
-		  //       value: 20593330
-		  //    }];
-
 				var outerRadius = Math.min(w, h) / 2;
 				var innerRadius = 0;
 
@@ -78,10 +70,18 @@
 				    });
 			}
 
-			d3.json("http://bananastic.ddns.net:3001/personas/sexcount", 
+			d3.json("http://bananastic.ddns.net:3001/personas/secount", 
 				function(err, data) {
   					if (err != null) {
-    					alert("Something went wrong: " + err);
+  						// Fallback just in case API is down.
+    					var data = [{
+					        label: "Males",
+					        value: 19523766
+					    }, {
+					        label: "Females",
+					        value: 20593330
+					    }];
+					    pieChart(data)
   					} else {
     					pieChart(data);
   					}
