@@ -2,13 +2,81 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
   <title>Circles</title>
   <script src="https://d3js.org/d3.v3.min.js"></script>
+
+  <!--Import Google Icon Font-->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">  
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!--Import jQuery before materialize.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+  <style type="text/css">
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      main {
+        flex: 1 0 auto;
+      }
+  </style>
+
 </head>
 <body>
+
+    
+
+<main>
+
+  <div class="container">
+    <div class="valign-wrapper">
+      <div class="card">
+    <!-- <div class="col s12 m4 l3"> -->
+        <!-- Grey navigation panel -->
+      <!-- </div> -->
   
-  <div id="circles"/>
+  <!-- <div class="col s12 m8 l9"> -->
+        <!-- Teal page content  -->
+
+        <div id="circles" />
+      </div>
+    </div>
+      
+  </div>
+
+</main>
+  
+        <footer class="page-footer">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">Visualización de la información</h5>
+                <p class="grey-text text-lighten-4">Instituto tecnológico de Buenos Aires</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2016 Pablo Diaz
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+        </footer> 
+
 
   <script>
     
@@ -24,7 +92,7 @@
                 .append("svg")
                 .attr("width", w)
                 .attr("height", h)
-                // .style("background", function(d) {return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random()*255)+ "," + Math.floor(Math.random() * 255)+")"});
+                 // .style("background", function(d) {return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random()*255)+ "," + Math.floor(Math.random() * 255)+")"});
   
     
       svg.selectAll("circle")
@@ -36,7 +104,6 @@
           .attr("r", function(d) {return d.r})
           .style("fill", function(d) {return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random()*255)+ "," + Math.floor(Math.random() * 255)+")"});
       
-  </script>
-  
+    </script>
 </body>
 </html>

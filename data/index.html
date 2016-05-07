@@ -1,35 +1,162 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>TP de datos personales</title>
+<html lang="en">
+<head>
+    <title>dc.js - Filtering Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="./dc.css"/>
 
-		<!--Import jQuery before materialize.js-->
-      	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
-		<!--Import Google Icon Font-->
-      	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-		<!-- Compiled and minified CSS -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
 
-		<!-- Compiled and minified JavaScript -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
 
-		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
-		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.min.js"></script>
-		<script type="stylesheet" src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.css"></script>
-		<script type="text/javascript" src="data.js"></script>
-	</head>
-	<body>
-	
-		<div class="container">
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.29/dc.min.js"></script>
+    <script type="stylesheet" src="http://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.29/dc.css"></script>
+</head>
+<body>
 
-			<div class="row">
-				<div id="litres" class="col s6"></div>
-				<div id="price" class="col s6"/></div>
-			</div>
-		</div>
-	</body>
+    <!-- <div class="container"> -->
+        <div class="row">
+            <div id="chart-row-stations" style="width:400px; height:300px" class="chart">
+                <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
+                    <a href="javascript:stationsRowChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
+            <div id="chart-hist-litres" style="width:400px; height:300px" class="chart">
+                <div class="reset" style="visibility: hidden;">range: <span class="filter"></span>
+                    <a href="javascript:litresHistChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
+            <div id="chart-litre-price" style="width:400px; height:300px" class="chart">
+                <div class="reset" style="visibility: hidden;">range: <span class="filter"></span>
+                    <a href="javascript:litresHistChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
+            <div id="chart-km-litre" style="width:400px; height:300px" class="chart">
+                <div class="reset" style="visibility: hidden;">range: <span class="filter"></span>
+                    <a href="javascript:litresHistChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- <div class="row">
+            <div class="col s12">
+                <div id="lists">
+                    <div id="refuels-list" class="list"></div>
+                </div>
+            </div>
+        </div> -->
+    
+    <!-- </div> -->
+
+<script type="text/javascript">
+
+var litresHistChart  = dc.barChart("#chart-hist-litres"),
+    stationsRowChart = dc.rowChart("#chart-row-stations"),
+    litrePriceHistChart = dc.barChart("#chart-litre-price"),
+    kmPerLitreChart = dc.barChart("#chart-km-litre");
+
+var data = d3.json("http://bananastic.ddns.net:3002/refuels.json", 
+        function(err, data) {
+            if (err != null) {
+              alert("Hey! Something went wrong")
+            } else {
+              show(data)
+            }
+      });
+
+function show(data) {
+
+    var minDate, maxDate;
+
+    data.forEach(function(elem) {
+        elem.date = new Date(elem.created_at);
+        if(minDate == undefined || minDate > elem.date) {
+            minDate = elem.date;
+        }
+        if(maxDate == undefined || maxDate < elem.date) {
+            maxDate = elem.date;
+        }
+    })
+    
+    // Set crossfilter
+    var cf = crossfilter(data),
+        stationDim = cf.dimension(function(d) {return d.station}),
+        refuelsPerStation = stationDim.group().reduceCount(),
+        dateDim = cf.dimension(function(d) {return d.id}),
+        litresPerDate = dateDim.group().reduceSum(function(d) {return d.litres}),
+        litrePrice = dateDim.group().reduceSum(function(d) {return (d.amount/d.litres)}),
+        kmPerLitre = dateDim.group().reduceSum(function(d) {return (d.tank_km)})
+
+    stationsRowChart
+        .dimension(stationDim)
+        .group(refuelsPerStation)
+        .elasticX(true)
+        .controlsUseVisibility(true);
+
+    litresHistChart
+        .dimension(dateDim)
+        .group(litresPerDate)
+        .x(d3.scale.linear().domain([3,data.length]))
+        .elasticY(true)
+        .controlsUseVisibility(true);
+
+    litrePriceHistChart
+        .dimension(dateDim)
+        .group(litrePrice)
+        .x(d3.scale.linear().domain([3,data.length]))
+        .elasticY(true)
+        .controlsUseVisibility(true);
+
+    litrePriceHistChart.yAxis().ticks(15)
+
+
+    kmPerLitreChart
+        .dimension(dateDim)
+        .group(kmPerLitre)
+        .x(d3.scale.linear().domain([3,data.length]))
+        .elasticY(true)
+        .controlsUseVisibility(true);
+
+    // litresHistChart.xAxis().tickFormat(function(d) { return d * 10 }); // convert back to base unit
+    // litresHistChart.yAxis().ticks(15);
+
+    // Render the initial lists.
+    var list = d3.selectAll(".list");
+    renderList(list)
+
+    function renderList(list) {
+        list
+        .selectAll(".date")
+        .data(dateDim.top(20))
+        .enter()
+        .append("div")
+        .attr("class", "refuel")
+        .html(function(d) {
+            return "<div class='date'>" + formatDate(d.date) + "</div>" 
+                    + "<div class='station'>" + d.station + "</div>"
+                    + "<div class='price'>" + "$" + (d.amount/d.litres).toFixed(2) + "</div>"
+        })
+    }
+
+    dc.renderAll();
+}
+
+function formatDate(date) {
+    return date.getDate() + "-" + (date.getMonth()+1) + "-" + (date.getFullYear());
+}
+
+</script>
+
+</body>
 </html>
