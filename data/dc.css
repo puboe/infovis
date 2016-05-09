@@ -359,4 +359,17 @@ g.dc-legend-item.fadeout {
     text-align: right;
 }
 
+.reset {
+    font-size:14px;
+    font-weight:normal;
+    padding-left: 1em;
+}
+
+.chart-title {
+    font-size: 20px;
+}
+
+.chart {
+    height: 250px;
+}
 
