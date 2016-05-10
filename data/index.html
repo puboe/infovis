@@ -29,7 +29,7 @@
     <div class="container">
         <div class="row" style="padding-bottom:50px; padding-top:50px;">
 
-            <div id="chart-row-stations" class="chart col s4">
+            <div id="chart-row-stations" class="chart col s6">
                 <span class="chart-title">
                     Estaciones de servicio
                 </span>    
@@ -37,7 +37,7 @@
                         <a href="javascript:stationsRowChart.filterAll();dc.redrawAll();">reset</a> 
                     </div>
             </div>
-            <div id="chart-hist-litres" class="chart col s4">
+            <div id="chart-hist-litres" class="chart col s6">
                 <span class="chart-title">
                     Cargas de combustible
                 </span>   
@@ -47,15 +47,45 @@
             </div>
         <!-- </div> -->
         <!-- <div class="row"> -->
-            <div id="chart-litre-price" class="chart col s4">
+            
+        </div>
+
+        <div class='row' style="padding-bottom:50px; padding-top:50px;">
+
+            <div id="chart-litre-price" class="chart col s6">
+                    <span class="chart-title">
+                        Evolución del precio por litro
+                    </span>   
+                    <div class="reset" style="visibility: hidden;">range: <span class="filter"></span>
+                        <a href="javascript:litrePriceHistChart.filterAll();dc.redrawAll();">reset</a>
+                    </div>
+            </div>
+
+            <div id="chart-refuels-per-month" class="chart col s6">
                 <span class="chart-title">
-                    Evolución del precio por litro
+                    Cargas por mes
                 </span>   
                 <div class="reset" style="visibility: hidden;">range: <span class="filter"></span>
-                    <a href="javascript:litrePriceHistChart.filterAll();dc.redrawAll();">reset</a>
+                    <a href="javascript:refuelsPerMonthChart.filterAll();dc.redrawAll();">reset</a>
                 </div>
             </div>
+            
         </div>
+
+        <div class='row' style="padding-bottom:50px; padding-top:50px;">
+
+            <div id="chart-refuels-per-day" class="chart col s6">
+                <span class="chart-title">
+                    Cargas por dia de la semana
+                </span>   
+                <div class="reset" style="visibility: hidden;">range: <span class="filter"></span>
+                    <a href="javascript:refuelsPerDayChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
+            
+        </div>
+
+
 
         <div class='row' style="padding-bottom:50px; padding-top:50px;">
             <div class='col s12'>
@@ -79,7 +109,9 @@
 
 var litresHistChart  = dc.barChart("#chart-hist-litres"),
     stationsRowChart = dc.rowChart("#chart-row-stations"),
-    litrePriceHistChart = dc.barChart("#chart-litre-price"),
+    litrePriceHistChart = dc.lineChart("#chart-litre-price"),
+    refuelsPerMonthChart = dc.lineChart("#chart-refuels-per-month"),
+    refuelsPerDayChart = dc.pieChart("#chart-refuels-per-day"),
     dataTable = dc.dataTable("#dc-table-graph");
 
 
@@ -100,12 +132,34 @@ function show(data) {
     
     // Set crossfilter
     var cf = crossfilter(data),
-        stationDim = cf.dimension(function(d) {return d.station}),
+        stationDim = cf.dimension(function(d) { return d.station }),
         refuelsPerStation = stationDim.group().reduceCount(),
-        dateDim = cf.dimension(function(d) {return d.id}),
-        litresPerDate = dateDim.group().reduceSum(function(d) {return d.litres}),
-        litrePrice = dateDim.group().reduceSum(function(d) {return (d.amount/d.litres)}),
-        kmPerLitre = dateDim.group().reduceSum(function(d) {return (d.tank_km)})
+        idDim = cf.dimension(function(d) { return d.id }),
+        dateDim = cf.dimension(function(d) { return d.date }),
+        litresPerDate = idDim.group().reduceSum(function(d) { return d.litres }),
+        litrePrice = dateDim.group().reduceSum(function(d) { return (d.amount/d.litres) }),
+        monthDim = cf.dimension(function(d) { return d3.time.month(d.date) }),
+        refuelsPerMonth = monthDim.group().reduceCount(),
+        dayDim = cf.dimension(function (d) {
+                    var day = d.date.getDay();
+                    switch (day) {
+                      case 0:
+                        return "Dom";
+                      case 1:
+                        return "Lun";
+                      case 2:
+                        return "Mar";
+                      case 3:
+                        return "Mie";
+                      case 4:
+                        return "Jue";
+                      case 5:
+                        return "Vie";
+                      case 6:
+                        return "Sab";
+                    }
+                }),
+        refuelsPerDay = dayDim.group()
 
     stationsRowChart
         .dimension(stationDim)
@@ -114,20 +168,35 @@ function show(data) {
         .controlsUseVisibility(true);
 
     litresHistChart
-        .dimension(dateDim)
+        .dimension(idDim)
         .group(litresPerDate)
-        .x(d3.scale.linear().domain([3,data.length]))
+        .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.id })))
         .elasticY(true)
         .controlsUseVisibility(true);
 
     litrePriceHistChart
         .dimension(dateDim)
         .group(litrePrice)
-        .x(d3.scale.linear().domain([3,data.length]))
+        .x(d3.time.scale().domain(d3.extent(data, function(d) { return (d.date) })))
         .elasticY(true)
-        .controlsUseVisibility(true);
+        .controlsUseVisibility(true)
+        .xAxis().tickFormat(function(v) { return formatDate2(v); });
 
-    litrePriceHistChart.yAxis().ticks(15)
+    refuelsPerMonthChart
+        .dimension(monthDim)
+        .group(refuelsPerMonth)
+        .elasticY(true)
+        .x(d3.time.scale().domain(d3.extent(data, function(d) { return (d.date) })))
+        .controlsUseVisibility(true)
+        .xAxis().tickFormat(function(v) { return formatDate2(v); });
+
+    refuelsPerMonthChart.yAxis().ticks(6);
+
+    refuelsPerDayChart
+        .dimension(dayDim)
+        .group(refuelsPerDay)
+        .innerRadius(30)
+        .controlsUseVisibility(true);
 
 
     // Table of earthquake data
@@ -153,7 +222,15 @@ function show(data) {
 }
 
 function formatDate(date) {
-    return date.getDate() + "-" + (date.getMonth()+1) + "-" + (date.getFullYear());
+    return formatNumber(date.getDate()) + "-" + formatNumber(date.getMonth()+1) + "-" + (date.getFullYear()%100);
+}
+
+function formatDate2(date) {
+    return (date.getMonth()+1) + "/" + (date.getFullYear()%100)
+}
+
+function formatNumber(number) {
+    return (number < 10 ? '0' : '') + number;
 }
 
 </script>
