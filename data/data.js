@@ -2,7 +2,7 @@ var litresHistChart  = dc.barChart("#chart-hist-litres"),
     stationsRowChart = dc.rowChart("#chart-row-stations"),
     litrePriceHistChart = dc.lineChart("#chart-litre-price"),
     refuelsPerMonthChart = dc.lineChart("#chart-refuels-per-month"),
-    refuelsPerDayChart = dc.pieChart("#chart-refuels-per-day"),
+    refuelsPerDayChart = dc.rowChart("#chart-refuels-per-day"),
     dataTable = dc.dataTable("#dc-table-graph");
 
 
@@ -63,12 +63,14 @@ function show(data) {
         .group(litresPerDate)
         .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.id })))
         .elasticY(true)
+        .yAxisLabel("Litros")
         .controlsUseVisibility(true);
 
     litrePriceHistChart
         .dimension(dateDim)
         .group(litrePrice)
         .x(d3.time.scale().domain(d3.extent(data, function(d) { return (d.date) })))
+    	.yAxisLabel("Precio")
         .elasticY(true)
         .controlsUseVisibility(true)
         .xAxis().tickFormat(function(v) { return formatDate2(v); });
@@ -77,6 +79,7 @@ function show(data) {
         .dimension(monthDim)
         .group(refuelsPerMonth)
         .elasticY(true)
+        .yAxisLabel("Cantidad")
         .x(d3.time.scale().domain(d3.extent(data, function(d) { return (d.date) })))
         .controlsUseVisibility(true)
         .xAxis().tickFormat(function(v) { return formatDate2(v); });
@@ -86,7 +89,6 @@ function show(data) {
     refuelsPerDayChart
         .dimension(dayDim)
         .group(refuelsPerDay)
-        .innerRadius(30)
         .controlsUseVisibility(true);
 
 
