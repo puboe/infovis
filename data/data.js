@@ -35,19 +35,19 @@ function show(data) {
                     var day = d.date.getDay();
                     switch (day) {
                       case 0:
-                        return "Dom";
+                        return "0.Dom";
                       case 1:
-                        return "Lun";
+                        return "1.Lun";
                       case 2:
-                        return "Mar";
+                        return "2.Mar";
                       case 3:
-                        return "Mie";
+                        return "3.Mie";
                       case 4:
-                        return "Jue";
+                        return "4.Jue";
                       case 5:
-                        return "Vie";
+                        return "5.Vie";
                       case 6:
-                        return "Sab";
+                        return "6.Sab";
                     }
                 }),
         refuelsPerDay = dayDim.group()
