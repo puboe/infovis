@@ -17,9 +17,16 @@ d3.json("http://bananastic.ddns.net:3002/refuels.json",
 
 function show(data) {
 
+    var totalLitres = 0, 
+        totalRefuels = 0;
+
     data.forEach(function(elem) {
         elem.date = new Date(elem.created_at);
+        totalLitres += elem.litres;
+        totalRefuels++;
     })
+
+    totalLitres = totalLitres.toFixed(0);
     
     // Set crossfilter
     var cf = crossfilter(data),
@@ -116,6 +123,12 @@ function show(data) {
     // litresHistChart.yAxis().ticks(15);
 
     dc.renderAll();
+
+    d3.selectAll("#total-refuels")
+        .text("Cantidad de cargas: " + parseInt(totalRefuels).toLocaleString('es'));
+
+    d3.selectAll("#total-litres")
+        .text("Cantidad de litros: " + parseInt(totalLitres).toLocaleString('es'));
 }
 
 function formatDate(date) {
