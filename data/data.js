@@ -1,7 +1,7 @@
 var litresHistChart  = dc.barChart("#chart-hist-litres"),
     stationsRowChart = dc.rowChart("#chart-row-stations"),
-    litrePriceHistChart = dc.lineChart("#chart-litre-price"),
-    refuelsPerMonthChart = dc.lineChart("#chart-refuels-per-month"),
+    litrePriceHistChart = dc.barChart("#chart-litre-price"),
+    refuelsPerMonthChart = dc.barChart("#chart-refuels-per-month"),
     refuelsPerDayChart = dc.rowChart("#chart-refuels-per-day"),
     dataTable = dc.dataTable("#dc-table-graph");
 
@@ -25,9 +25,8 @@ function show(data) {
     var cf = crossfilter(data),
         stationDim = cf.dimension(function(d) { return d.station }),
         refuelsPerStation = stationDim.group().reduceCount(),
-        idDim = cf.dimension(function(d) { return d.id }),
         dateDim = cf.dimension(function(d) { return d.date }),
-        litresPerDate = idDim.group().reduceSum(function(d) { return d.litres }),
+        litresPerDate = dateDim.group().reduceSum(function(d) { return d.litres }),
         litrePrice = dateDim.group().reduceSum(function(d) { return (d.amount/d.litres) }),
         monthDim = cf.dimension(function(d) { return d3.time.month(d.date) }),
         refuelsPerMonth = monthDim.group().reduceCount(),
@@ -52,6 +51,8 @@ function show(data) {
                 }),
         refuelsPerDay = dayDim.group()
 
+    var dateFormat = function(v) { return formatDate2(v); }
+
     stationsRowChart
         .dimension(stationDim)
         .group(refuelsPerStation)
@@ -59,12 +60,13 @@ function show(data) {
         .controlsUseVisibility(true);
 
     litresHistChart
-        .dimension(idDim)
+        .dimension(dateDim)
         .group(litresPerDate)
-        .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.id })))
+        .x(d3.time.scale().domain(d3.extent(data, function(d) { return d.date })))
         .elasticY(true)
         .yAxisLabel("Litros")
-        .controlsUseVisibility(true);
+        .controlsUseVisibility(true)
+        .xAxis().tickFormat(dateFormat);
 
     litrePriceHistChart
         .dimension(dateDim)
@@ -72,17 +74,19 @@ function show(data) {
         .x(d3.time.scale().domain(d3.extent(data, function(d) { return (d.date) })))
     	.yAxisLabel("Precio")
         .elasticY(true)
+        .centerBar(true)
         .controlsUseVisibility(true)
-        .xAxis().tickFormat(function(v) { return formatDate2(v); });
+        .xAxis().tickFormat(dateFormat);
 
     refuelsPerMonthChart
         .dimension(monthDim)
         .group(refuelsPerMonth)
         .elasticY(true)
         .yAxisLabel("Cantidad")
+        .centerBar(true)
         .x(d3.time.scale().domain(d3.extent(data, function(d) { return (d.date) })))
         .controlsUseVisibility(true)
-        .xAxis().tickFormat(function(v) { return formatDate2(v); });
+        .xAxis().tickFormat(dateFormat);
 
     refuelsPerMonthChart.yAxis().ticks(6);
 
