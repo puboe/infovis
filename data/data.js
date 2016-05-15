@@ -6,7 +6,7 @@ var litresHistChart  = dc.barChart("#chart-hist-litres"),
     dataTable = dc.dataTable("#dc-table-graph");
 
 
-d3.json("http://bananastic.ddns.net:3002/refuels.json", 
+d3.json("https://km.emerosenz.com/json", 
         function(err, data) {
             if (err != null) {
               alert("Hey! Something went wrong")
